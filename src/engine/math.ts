@@ -48,7 +48,7 @@ export const applyDephase = (rho:M2, p:number): M2 => {
 };
 
 // Tr(A B)
-const traceProd = (a:M2,b:M2): C => {
+const traceProd = (a:M2,b:M2) => {
   const ab = m2mul(a,b);
   return c(ab[0][0].re + ab[1][1].re, ab[0][0].im + ab[1][1].im);
 };
@@ -58,7 +58,6 @@ export const blochAndPurity = (rho:M2) => {
   const ex = traceProd(rho, X).re;
   const ey = traceProd(rho, Y).re;
   const ez = traceProd(rho, Z).re;
-  // Purity = Tr(rho^2)
-  const rr = traceProd(rho, rho).re;
+  const rr = traceProd(rho, rho).re; // purity
   return { x: ex, y: ey, z: ez, purity: rr };
 };

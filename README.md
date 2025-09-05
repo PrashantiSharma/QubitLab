@@ -1,29 +1,16 @@
 
-# Qubit Lab — Bloch Playground (MVP)
+# Qubit Lab — Bloch Playground (MVP v2)
 
-A tiny MVP for your faculty showcase: live Bloch sphere, H/X/Y/Z gates, and dephasing noise that visibly reduces purity.
+Visual Bloch sphere with H/X/Y/Z gates and **dephasing noise**.
+**New in v2:** Arrow length now encodes |r| (mixedness), OrbitControls for rotation, and ⟨X,Y,Z⟩ readouts.
 
 ## Quickstart
 ```bash
-# 1) Extract zip, then:
 cd qubit-lab
 npm install
 npm run dev
-# Open the shown localhost URL (usually http://localhost:5173)
 ```
 
-## What this MVP includes
-- React + TypeScript + Vite scaffold
-- Web Worker math engine (keeps UI at 60 fps)
-- 1-qubit density matrix evolution
-- Gates: H, X, Y, Z
-- Dephasing noise slider
-- Live Bloch sphere (Three.js), purity readout
-
-## Next steps (suggested)
-1) Add amplitude damping and depolarizing channels.
-2) Build a drag-and-drop circuit timeline.
-3) Extend to 2 qubits (Bell + CHSH).
-4) Add error mitigation (readout calibration + ZNE).
-5) Polish UI and export screenshots/CSV.
-```
+- Press **H** to create |+⟩ (⟨X⟩≈1).  
+- Increase **Dephasing p** to watch the arrow **shrink** and Purity → 0.5.  
+- Rotate the sphere with your mouse if you don’t notice directional changes.
