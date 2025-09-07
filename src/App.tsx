@@ -24,6 +24,24 @@ export default function App() {
     worker?.postMessage({ type: "dephase", p: val });
   };
 
+  
+const makePlus = () => {
+  setP(0);
+  worker?.postMessage({ type: "reset" });
+  // Slight delay not strictly needed, but keeps order visually obvious
+  setTimeout(()=>worker?.postMessage({ type:"gate", gate:"H" }), 0);
+};
+
+const demoDephase = () => {
+  setP(0);
+  worker?.postMessage({ type: "reset" });
+  setTimeout(()=>worker?.postMessage({ type:"gate", gate:"H" }), 0);
+  setTimeout(()=>{
+    setP(0.5);
+    worker?.postMessage({ type:"dephase", p: 0.5 });
+  }, 0);
+};
+
   const resetAll = () => {
     setP(0);
     worker?.postMessage({ type: "reset" });
@@ -32,7 +50,7 @@ export default function App() {
   return (
     <div>
       <h1 style={{ margin: "8px 0 6px" }}>Qubit Lab — Bloch Playground</h1>
-      <p style={{ marginTop: 0, color: "#666" }}>H/X/Y/Z gates + Dephasing noise. Arrow length encodes mixedness (|r|).</p>
+      <p style={{ marginTop: 0, color: "#666" }}>H/X/Y/Z gates + Dephasing noise. Arrow length encodes mixedness (|r|). Note: You start in |0⟩ (on +Z). Dephasing has no visible effect on |0⟩ — first create a superposition (e.g., click H for |+⟩).</p>
       <BlochSphereGL x={state.x} y={state.y} z={state.z} />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginTop: 8 }}>
         <div>⟨X⟩ = <b>{state.x.toFixed(3)}</b></div>
