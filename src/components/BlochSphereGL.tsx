@@ -22,7 +22,10 @@ export default function BlochSphereGL({ x, y, z }: Props) {
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(mount.clientWidth || 800, mount.clientHeight || 420);
+    renderer.setPixelRatio(window.devicePixelRatio);
     mount.appendChild(renderer.domElement);
+    // Allow gestures to be captured without the browser's default handling
+    renderer.domElement.style.touchAction = "none";
     rendererRef.current = renderer;
 
     // Sphere (wireframe) + equator
@@ -73,6 +76,12 @@ export default function BlochSphereGL({ x, y, z }: Props) {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
+    // Explicitly allow zooming/rotation and restrict panning
+    controls.enableZoom = true;
+    controls.enableRotate = true;
+    controls.enablePan = false;
+    controls.minDistance = 1.2;
+    controls.maxDistance = 5;
 
     const onResize = () => {
       const w = mount.clientWidth || 800, h = mount.clientHeight || 420;
@@ -86,6 +95,7 @@ export default function BlochSphereGL({ x, y, z }: Props) {
 
     return () => {
       window.removeEventListener("resize", onResize);
+      controls.dispose();
       if (rendererRef.current) {
         mount.removeChild(rendererRef.current.domElement);
         rendererRef.current.dispose();
