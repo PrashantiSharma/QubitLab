@@ -16,6 +16,12 @@ export const H: M2 = [[c(1/Math.SQRT2),c(1/Math.SQRT2)],[c(1/Math.SQRT2),c(-1/Ma
 
 export const ket0bra0 = (): M2 => [[c(1),c(0)],[c(0),c(0)]];
 
+// Density matrix from Bloch vector (assumes |r|≤1)
+export const rhoFromBloch = (x:number, y:number, z:number): M2 => [
+  [c(0.5*(1+z), 0), c(0.5*x, -0.5*y)],
+  [c(0.5*x, 0.5*y), c(0.5*(1-z), 0)]
+];
+
 // multiply 2x2 matrices: a*b
 const m2mul = (a:M2,b:M2): M2 => {
   const r: M2 = [[c(),c()],[c(),c()]];

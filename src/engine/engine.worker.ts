@@ -1,6 +1,6 @@
 
 /// <reference lib="webworker" />
-import { M2, H, X, Y, Z, applyUnitary, applyDephase, blochAndPurity, ket0bra0 } from "./math";
+import { M2, H, X, Y, Z, applyUnitary, applyDephase, blochAndPurity, ket0bra0, rhoFromBloch } from "./math";
 
 let rho: M2 = ket0bra0();
 
@@ -8,6 +8,7 @@ type Msg =
   | { type: "reset" }
   | { type: "gate", gate: "H" | "X" | "Y" | "Z" }
   | { type: "dephase", p: number }
+  | { type: "setBloch", x: number, y: number, z: number }
   | { type: "snapshot" };
 
 const post = () => (self as any).postMessage({
@@ -29,6 +30,9 @@ self.addEventListener("message", (ev: MessageEvent<Msg>) => {
     }
     case "dephase":
       rho = applyDephase(rho, m.p);
+      break;
+    case "setBloch":
+      rho = rhoFromBloch(m.x, m.y, m.z);
       break;
     case "snapshot":
       break;
