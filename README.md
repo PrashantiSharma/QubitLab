@@ -12,5 +12,6 @@ npm run dev
 ```
 
 - Press **H** to create |+⟩ (⟨X⟩≈1).  
-- Increase **Dephasing p** to watch the arrow **shrink** and Purity → 0.5.  
+- Increase **Dephasing p** to watch the arrow **shrink** and Purity → 0.5.
 - Rotate the sphere with your mouse if you don’t notice directional changes.
+- Drag the arrow on the sphere to set a custom state.
