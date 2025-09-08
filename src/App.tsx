@@ -50,8 +50,12 @@ const demoDephase = () => {
 
   return (
     <div>
-      <h1 style={{ margin: "8px 0 6px" }}>Qubit Lab — Bloch Playground</h1>
-      <p style={{ marginTop: 0, color: "#666" }}>H/X/Y/Z gates + Dephasing noise. Arrow length encodes mixedness (|r|). Note: You start in |0⟩ (on +Z). Dephasing has no visible effect on |0⟩ — first create a superposition (e.g., click H for |+⟩).</p>
+      <h1 style={{ margin: "8px 0 6px" }}>Polaris — Quantum State Cartography & Noise Dynamics on the Bloch Sphere</h1>
+      <p style={{ marginTop: 0, color: "#666" }}>
+        Interactive Bloch sphere with H/X/Y/Z gates and dephasing noise. Arrow length encodes mixedness (|r|).
+        You start in |0⟩ (on +Z). Dephasing has no visible effect on |0⟩ — first create a superposition (e.g.,
+        click H for |+⟩).
+      </p>
       <BlochSphereGL x={state.x} y={state.y} z={state.z} onVectorChange={(nx,ny,nz)=>{ update({ x:nx, y:ny, z:nz, purity:1 }); worker?.postMessage({ type:"setBloch", x:nx, y:ny, z:nz }); }} />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginTop: 8 }}>
         <div>⟨X⟩ = <b>{state.x.toFixed(3)}</b></div>

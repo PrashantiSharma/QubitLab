@@ -1,18 +1,28 @@
+# Polaris — Quantum State Cartography & Noise Dynamics on the Bloch Sphere
 
-# Qubit Lab — Bloch Playground (MVP v2)
+Polaris is an interactive, real‑time simulator for a single qubit. The app maps θ/φ controls directly onto the Bloch sphere so that state preparation and the resulting measurements are visually intuitive.
 
-Visual Bloch sphere with H/X/Y/Z gates and **dephasing noise**.
-**New in v2:** Arrow length now encodes |r| (mixedness), OrbitControls for rotation, and ⟨X,Y,Z⟩ readouts.
-Dragging the arrow now synchronizes the underlying state so subsequent gates operate on the rotated qubit.
+## Features
+
+* Set the qubit by adjusting θ∈[0,π] and φ∈[0,2π). The Bloch vector updates instantly.
+* Read complex amplitudes α, β and probabilities in the Z, X and Y bases.
+* Animated panels display the real part of rotating basis amplitudes to make the relative phase tangible.
+* Optional noise channels – dephasing, depolarizing and amplitude damping – shorten the Bloch vector and report the state’s purity.
+* A two‑qubit Bell/CHSH extension demonstrates entanglement and its fragility under noise.
+
+## Core Pipeline
+
+1. **UI → worker.** The main thread sends angles and noise parameters to a web worker.
+2. **Physics.** The worker prepares the state \(|ψ⟩=\cos(θ/2)|0⟩+e^{iφ}\sin(θ/2)|1⟩\), derives the Bloch vector, basis amplitudes and probabilities.
+3. **Render.** React and Three.js render the Bloch sphere, probability bars and phase animations.
 
 ## Quickstart
+
 ```bash
-cd qubit-lab
 npm install
 npm run dev
 ```
 
-- Press **H** to create |+⟩ (⟨X⟩≈1).  
-- Increase **Dephasing p** to watch the arrow **shrink** and Purity → 0.5.
-- Rotate the sphere with your mouse if you don’t notice directional changes.
-- Drag the arrow on the sphere to set a custom state (simulation stays in sync).
+* Drag the arrow or use the sliders to set a state.
+* Increase dephasing to watch the vector shrink and the purity approach 0.5.
+* Create a Bell pair and check the CHSH value; ideal S≈2.828 falls below 2 with enough noise.
