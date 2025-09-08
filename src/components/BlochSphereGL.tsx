@@ -3,13 +3,15 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-type Props = { x: number; y: number; z: number; };
+type Props = { x: number; y: number; z: number; onVectorChange?: (x:number, y:number, z:number)=>void };
 
-export default function BlochSphereGL({ x, y, z }: Props) {
+export default function BlochSphereGL({ x, y, z, onVectorChange }: Props) {
   const mountRef = useRef<HTMLDivElement>(null);
   const arrowRef = useRef<THREE.ArrowHelper | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const cbRef = useRef<typeof onVectorChange>();
+  cbRef.current = onVectorChange;
 
   useEffect(() => {
     const mount = mountRef.current!;
@@ -83,6 +85,31 @@ export default function BlochSphereGL({ x, y, z }: Props) {
     controls.minDistance = 1.2;
     controls.maxDistance = 5;
 
+    // Drag arrow by interacting with the sphere
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    let dragging = false;
+    const updateArrow = (e: PointerEvent) => {
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+      const hit = raycaster.intersectObject(sphere)[0];
+      if (hit) {
+        const p = hit.point;
+        const dir = p.clone().normalize();
+        arrow.setDirection(dir);
+        arrow.setLength(Math.min(1, p.length()));
+        cbRef.current?.(dir.x, dir.y, dir.z);
+      }
+    };
+    const onDown = (e: PointerEvent) => { dragging = true; updateArrow(e); };
+    const onMove = (e: PointerEvent) => { if (dragging) updateArrow(e); };
+    const onUp = () => { dragging = false; };
+    renderer.domElement.addEventListener('pointerdown', onDown);
+    renderer.domElement.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+
     const onResize = () => {
       const w = mount.clientWidth || 800, h = mount.clientHeight || 420;
       camera.aspect = w / h; camera.updateProjectionMatrix();
@@ -94,6 +121,9 @@ export default function BlochSphereGL({ x, y, z }: Props) {
     tick();
 
     return () => {
+      renderer.domElement.removeEventListener('pointerdown', onDown);
+      renderer.domElement.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
       window.removeEventListener("resize", onResize);
       controls.dispose();
       if (rendererRef.current) {
