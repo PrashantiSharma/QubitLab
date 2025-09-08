@@ -1,23 +1,24 @@
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import BlochSphereGL from "./components/BlochSphereGL";
 import { useApp } from "./store";
 
 export default function App() {
   const { state, setWorker, update, worker } = useApp();
   const [p, setP] = useState(0);
+  const workerRef = useRef<Worker>();
 
-  const w = useMemo(()=> new Worker(new URL("./engine/engine.worker.ts", import.meta.url), { type: "module" }),[]);
-
-  useEffect(()=>{
+  useEffect(() => {
+    workerRef.current ??= new Worker(new URL("./engine/engine.worker.ts", import.meta.url), { type: "module" });
+    const w = workerRef.current;
     setWorker(w);
     w.onmessage = (ev: MessageEvent<any>) => {
       const { x, y, z, purity } = ev.data;
       update({ x, y, z, purity });
     };
     w.postMessage({ type: "reset" });
-    return ()=> w.terminate();
-  }, [setWorker, update, w]);
+    return () => w.terminate();
+  }, [setWorker, update]);
 
   const applyNoise = (val:number) => {
     setP(val);
@@ -51,7 +52,7 @@ const demoDephase = () => {
     <div>
       <h1 style={{ margin: "8px 0 6px" }}>Qubit Lab — Bloch Playground</h1>
       <p style={{ marginTop: 0, color: "#666" }}>H/X/Y/Z gates + Dephasing noise. Arrow length encodes mixedness (|r|). Note: You start in |0⟩ (on +Z). Dephasing has no visible effect on |0⟩ — first create a superposition (e.g., click H for |+⟩).</p>
-      <BlochSphereGL x={state.x} y={state.y} z={state.z} onVectorChange={(nx,ny,nz)=>update({ x:nx, y:ny, z:nz, purity:1 })} />
+      <BlochSphereGL x={state.x} y={state.y} z={state.z} onVectorChange={(nx,ny,nz)=>{ update({ x:nx, y:ny, z:nz, purity:1 }); worker?.postMessage({ type:"setBloch", x:nx, y:ny, z:nz }); }} />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginTop: 8 }}>
         <div>⟨X⟩ = <b>{state.x.toFixed(3)}</b></div>
         <div>⟨Y⟩ = <b>{state.y.toFixed(3)}</b></div>
