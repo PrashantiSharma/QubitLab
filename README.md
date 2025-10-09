@@ -2,7 +2,7 @@
 # Qubit Lab — Bloch Playground (MVP v2)
 
 Visual Bloch sphere with H/X/Y/Z gates and **dephasing noise**.
-**New in v2:** Arrow length now encodes |r| (mixedness), OrbitControls for rotation, and ⟨X,Y,Z⟩ readouts.
+**New in v2:** Arrow length now encodes |r| (mixedness), Orbit Controls for rotation, and ⟨X,Y,Z⟩ readouts.
 Dragging the arrow now synchronizes the underlying state so subsequent gates operate on the rotated qubit.
 
 ## Quickstart
